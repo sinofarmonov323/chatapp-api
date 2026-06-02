@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="log"></div>
+  <input id="msg" placeholder="Type a message" />
+  <button onclick="sendMsg()">Send</button>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:8000/ws")
+
+    ws.onmessage = (e) => {
+      const log = document.getElementById("log")
+      log.innerHTML += `<p>${e.data}</p>`
+    }
+
+    function sendMsg() {
+      const input = document.getElementById("msg")
+      if (!input.value.trim()) return
+      ws.send(input.value)
+      input.value = ""
+    }
+
+    document.getElementById("msg").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMsg()
+    })
+  </script>
+</body>
+</html>
