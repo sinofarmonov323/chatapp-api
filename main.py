@@ -7,12 +7,22 @@ import auth
 from auth import get_current_user
 from starlette.websockets import WebSocketDisconnect
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from guard import SecurityConfig, SecurityMiddleware
 
 app = FastAPI()
 
 template = Jinja2Templates(directory="templates")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['POST', 'GET'],
+    allow_headers=['*']
+)
+# config = SecurityConfig(rate_limit=20, auto_ban_threshold=10, enable_penetration_detection=True, blocked_user_agents=['bot', 'crawler'])
+# app.add_middleware(SecurityMiddleware, config=config)
 app.include_router(auth.router)
 
 models.Base.metadata.create_all(bind=engine)
